@@ -1,26 +1,39 @@
 #!/usr/bin/env python
 """Utilize crypto domains DNS and either redirect, or display information."""
-from flask import Flask, redirect, url_for
+from bottle import Bottle, run, response, request
 import json
 import requests
 
 VERSION = '0.0.1'
 
-app = Flask(__name__)
+app = Bottle()
 
 
 @app.route("/")
 def root():
-    return 'There is nothing here'
+    host = request.get_header('host')
+    return f'specify domain in URL like {host}/domain.crypto'
 
 
-@app.route("/<string:domain>")
+@app.route("/<domain>")
 def showdomain(domain):
-    redirect = requests.get(f'https://unstoppabledomains.com/api/v1/{domain}')
-    if redirect.status_code == 200:
-        body = json.loads(redirect.content)
-        redirect_url = body['ipfs']['redirect_domain']
-        return f'<body onload="window.location = \'{redirect_url}\'"><p></body>'
+    apiurl =f'https://unstoppabledomains.com/api/v1/{domain}'
+    redirect = requests.get(apiurl)
+    try:
+        if redirect.status_code == 200:
+            body = json.loads(redirect.content)
+            print(body)
+            redirect_url = body['ipfs']['redirect_domain']
+            # TODO: Add handler for the ipfs vs redirect
+#            if body['ipfs']['html']:
+#                print('We have html')
+            response.status = 302
+            response.set_header('Location',redirect_url)
+        else:
+            return f'Error making call to {apiurl} for {domain}'
+    except KeyError:
+        return f'Did not find a redirect for {domain}'
+
 
 if __name__ == "__main__":
-    app.run()
+    run(app, host='localhost', port='5000', reloader=True)
