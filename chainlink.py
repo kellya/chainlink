@@ -63,4 +63,4 @@ def redirectDomain(domain, action=None):
             return json2html.json2html.convert(json = body)
 
 if __name__ == "__main__":
-    run(app, host='localhost', port='5000', reloader=True)
+    run(app, host='0.0.0.0', port='5000', reloader=True)
