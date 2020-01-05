@@ -15,16 +15,18 @@ def root():
     host = request.get_header('host')
     helptext = f"""
     <p>General format is {host}/&lt;domain&gt;/&lt;action&gt;
-    <p>If <action> is blank, it will attempt to use the redirect
+    <p>If &lt;action&gt; is blank, it will attempt to use the redirect
     <p>You may also/optionally specify an action which can be any of the following
     <table margin-left="100px">
     <tr>
     <td>raw</td>
     <td>Show the raw json (formatted as an html table)</td>
     </tr>
+    <tr>
     <td>html</td>
     <td>Hit the IPFS hash via cloudflare-ipfs.com</td>
     </tr>
+    <tr>
     <td>redir</td>
     <td>Use the redirect parameter and just return a 302 redirect to whatever is set</td>
     </tr>
