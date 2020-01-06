@@ -38,9 +38,9 @@ def root():
 @app.route("/<domain>")
 @app.route("/<domain>/<action>")
 def redirectDomain(domain, action=None):
-    apiurl =f'https://unstoppabledomains.com/api/v1/{domain}'
+    apiurl = f'https://unstoppabledomains.com/api/v1/{domain}'
     dnslookup = requests.get(apiurl)
-    if action == None or action == 'redir':
+    if action == 'redir':
         try:
             if dnslookup.status_code == 200:
                 body = json.loads(dnslookup.content)
@@ -54,7 +54,7 @@ def redirectDomain(domain, action=None):
                 return f'Error making call to {apiurl} for {domain}'
         except KeyError:
             return f'Did not find a redirect for {domain}'
-    elif action == 'html':
+    elif action is None or action == 'html':
         # TODO: clean this up by functionalizing this call.  It's basically the same as above
         if dnslookup.status_code == 200:
             body = json.loads(dnslookup.content)
