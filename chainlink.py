@@ -15,7 +15,7 @@ def root():
     host = request.get_header('host')
     helptext = f"""
     <p>General format is {host}/&lt;domain&gt;/&lt;action&gt;
-    <p>If &lt;action&gt; is blank, it will attempt to use the redirect
+    <p>If &lt;action&gt; is blank, it will attempt to use the IPFS hash
     <p>You may also/optionally specify an action which can be any of the following
     <table margin-left="100px">
     <tr>
