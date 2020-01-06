@@ -27,9 +27,9 @@ https://chainlink.arachnitech.com/
 URL Patterns
 ============
 
-The general format is http://localhost:5000/\<domain\>/\<action\>
-where \<domain\> is a .crypto or .zil name registered with Unstoppable
-Domains and \<action\> can be
+The general format is http://localhost:5000/{domain}/{action}
+where {domain} is a .crypto or .zil name registered with Unstoppable
+Domains and {action} can be
 * html - uses the IPFS hash set in Unstoppable Domains management
 * redir - uses the redirect_url set in Unstoppable Domains management
 * raw - displays an HTML table view of the full JSON returned from Unstoppable
@@ -45,11 +45,12 @@ I added a browser search engine for each of the UD domains (.zil and .crypto) so
 that, when I type `.crypto domain` The browser will automatically redirect based
 on the output from my chainlink script.
 
-The settings to make that work for .crypto is:
+The settings to make that work for .crypto is: <p>
 ![.crypto search registration][crypto]
 
-It's basically the same for .zil:
+It's basically the same for .zil: <p>
 ![.crypto search registration][zil]
+
 
 [crypto]: images/cryptosearch.png
 [zil]: images/zilsearch.png
