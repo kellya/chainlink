@@ -42,7 +42,7 @@ def root():
     </tr>
     <tr>
     <td>html</td>
-    <td>Hit the IPFS hash via cloudflare-ipfs.com</td>
+    <td>Hit the IPFS hash via gateway.ipfs.io</td>
     </tr>
     <tr>
     <td>redir</td>
@@ -74,7 +74,7 @@ def redirectDomain(domain, action=None):
         else:
             ipfshash = ipfs_hash
         response.set_header('Location',
-                            f"https://cloudflare-ipfs.com/{ipfshash}")
+                            f"https://gateway.ipfs.io/{ipfshash}")
     elif action == 'redir':
         try:
             if not redirect_url.startswith('http'):
