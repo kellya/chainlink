@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """Utilize crypto domains DNS and either redirect, or display information."""
-from bottle import Bottle, run, response, request, static_file
+from bottle import Bottle, run, response, request, static_file, redirect
 import json
 import requests
 import json2html
@@ -60,6 +60,8 @@ def root():
 def redirectDomain(domain, action=None):
     """Handle the actual redirect for the domain queried"""
     lookupResult = domainLookup(domain)
+    if domain == 'yourdomain.crypto' or domain == 'yourdomain.zil':
+        redirect('/')
     if lookupResult:
         redirect_url = lookupResult['ipfs']['redirect_domain']
         ipfs_hash = lookupResult['ipfs']['html']
