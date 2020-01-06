@@ -10,6 +10,14 @@ VERSION = '0.0.1'
 app = Bottle()
 
 
+def domainLookup(domain):
+    apibase = 'https://unstoppabledomains.com/api/v1/'
+    dnslookup = requests.get(apibase + domain)
+    domainJSON = json.loads(dnslookup.content)
+    print(domainJSON)
+    return domainJSON
+
+
 @app.route("/")
 def root():
     host = request.get_header('host')
@@ -38,41 +46,30 @@ def root():
 
 
 @app.route("/<domain>")
+@app.route("/<domain>/")
 @app.route("/<domain>/<action>")
 def redirectDomain(domain, action=None):
-    apiurl = f'https://unstoppabledomains.com/api/v1/{domain}'
-    dnslookup = requests.get(apiurl)
+    lookupResult = domainLookup(domain)
+    redirect_url = lookupResult['ipfs']['redirect_domain']
+    html = lookupResult['ipfs']['html']
     if action == 'redir':
         try:
-            if dnslookup.status_code == 200:
-                body = json.loads(dnslookup.content)
-                print(body)
-                redirect_url = body['ipfs']['redirect_domain']
-                if not redirect_url.startswith('http'):
-                    redirect_url = "http://" + redirect_url
-                response.status = 302
-                response.set_header('Location', redirect_url)
-            else:
-                return f'Error making call to {apiurl} for {domain}'
+            if not redirect_url.startswith('http'):
+                redirect_url = "http://" + redirect_url
+            response.status = 302
+            response.set_header('Location', redirect_url)
         except KeyError:
             return f'Did not find a redirect for {domain}'
     elif action is None or action == 'html':
-        # TODO: clean this up by functionalizing this call.
-        #    It's basically the same as above
-        if dnslookup.status_code == 200:
-            body = json.loads(dnslookup.content)
-            print(body)
-            response.status = 302
-            if not body['ipfs']['html'].startswith('/ip'):
-                ipfshash = "ipfs/" + body['ipfs']['html']
-            else:
-                ipfshash = body['ipfs']['html']
-            response.set_header('Location',
-                                f"https://cloudflare-ipfs.com/{ipfshash}")
+        response.status = 302
+        if not html.startswith('/ip'):
+            ipfshash = "ipfs/" + html
+        else:
+            ipfshash = html
+        response.set_header('Location',
+                            f"https://cloudflare-ipfs.com/{ipfshash}")
     elif action == 'raw':
-        if dnslookup.status_code == 200:
-            body = json.loads(dnslookup.content)
-            return json2html.json2html.convert(json=body)
+        return json2html.json2html.convert(json=lookupResult)
 
 
 if __name__ == "__main__":
