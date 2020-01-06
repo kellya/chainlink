@@ -16,8 +16,9 @@ def root():
     helptext = f"""
     <p>General format is {host}/&lt;domain&gt;/&lt;action&gt;
     <p>If &lt;action&gt; is blank, it will attempt to use the IPFS hash
-    <p>You may also/optionally specify an action which can be any of the following
-    <table margin-left="100px">
+    <p>You may also/optionally specify an action which can be any of the
+    following
+    <table style="margin-left: 50px;border=1px;">
     <tr>
     <td>raw</td>
     <td>Show the raw json (formatted as an html table)</td>
@@ -28,7 +29,8 @@ def root():
     </tr>
     <tr>
     <td>redir</td>
-    <td>Use the redirect parameter and just return a 302 redirect to whatever is set</td>
+    <td>Use the redirect parameter and just return a 302 redirect to whatever
+    is set</td>
     </tr>
     </table>
     """
@@ -49,13 +51,14 @@ def redirectDomain(domain, action=None):
                 if not redirect_url.startswith('http'):
                     redirect_url = "http://" + redirect_url
                 response.status = 302
-                response.set_header('Location',redirect_url)
+                response.set_header('Location', redirect_url)
             else:
                 return f'Error making call to {apiurl} for {domain}'
         except KeyError:
             return f'Did not find a redirect for {domain}'
     elif action is None or action == 'html':
-        # TODO: clean this up by functionalizing this call.  It's basically the same as above
+        # TODO: clean this up by functionalizing this call.
+        #    It's basically the same as above
         if dnslookup.status_code == 200:
             body = json.loads(dnslookup.content)
             print(body)
@@ -64,11 +67,13 @@ def redirectDomain(domain, action=None):
                 ipfshash = "ipfs/" + body['ipfs']['html']
             else:
                 ipfshash = body['ipfs']['html']
-            response.set_header('Location', f"https://cloudflare-ipfs.com/{ipfshash}")
+            response.set_header('Location',
+                                f"https://cloudflare-ipfs.com/{ipfshash}")
     elif action == 'raw':
         if dnslookup.status_code == 200:
             body = json.loads(dnslookup.content)
-            return json2html.json2html.convert(json = body)
+            return json2html.json2html.convert(json=body)
+
 
 if __name__ == "__main__":
     run(app, host='0.0.0.0', port='5000', reloader=True)
