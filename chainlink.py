@@ -60,7 +60,7 @@ def redirectDomain(domain, action=None):
             body = json.loads(dnslookup.content)
             print(body)
             response.status = 302
-            if not body['ipfs']['html'].startswith('ip'):
+            if not body['ipfs']['html'].startswith('/ip'):
                 ipfshash = "ipfs/" + body['ipfs']['html']
             else:
                 ipfshash = body['ipfs']['html']
