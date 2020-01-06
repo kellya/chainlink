@@ -1,8 +1,8 @@
 Chainlink
 =========
 
-Chainlink is a utility that will run on a webserver to handle crypt-backed
-domains Specifically this works with
+Chainlink is a utility that will run on a webserver to handle crypto-backed
+domain names Specifically this works with
 [Unstoppable Domains](https://unstoppabledomains.com)
 This utilizes public IPFS gateways to display IPFS content, or will redirect to
 whatever the URL is set to in the Unstoppable Domain management.
