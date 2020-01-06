@@ -8,10 +8,10 @@ Installation
 
 To install this on your own server:
 
-#.  Clone this repository
-#.  Install the python dependancies via `pip install -r requirements.txt`
-#.  Run the server with `./chainlink.py`
-#.  You can now hit the app at [http://localhost:5000/](http://localhost:5000)
+1.  Clone this repository
+2.  Install the python dependancies via `pip install -r requirements.txt`
+3.  Run the server with `./chainlink.py`
+4.  You can now hit the app at [http://localhost:5000/](http://localhost:5000)
 
 Testing on a running instance
 =============================
