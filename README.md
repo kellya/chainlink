@@ -37,3 +37,19 @@ Domains and \<action\> can be
 
 The default action is "html", so if you don't specify anything it will attempt
 to use that field.
+
+Browser Search Engine
+=====================
+
+I added a browser search engine for each of the UD domains (.zil and .crypto) so
+that, when I type `.crypto domain` The browser will automatically redirect based
+on the output from my chainlink script.
+
+The settings to make that work for .crypto is:
+![.crypto search registration][crypto]
+
+It's basically the same for .zil:
+![.crypto search registration][zil]
+
+[crypto]: images/cryptosearch.png
+[zil]: images/zilsearch.png
