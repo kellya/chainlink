@@ -27,9 +27,9 @@ https://chainlink.arachnitech.com/
 URL Patterns
 ============
 
-The general format is http://localhost:5000/&lt;domain&gt;lt;/action&gt;
-where &lt;domain&gt; is a .crypto or .zil name registered with Unstoppable
-Domains and &lt;action&gt; can be
+The general format is http://localhost:5000/<domain>/<action>
+where <domain> is a .crypto or .zil name registered with Unstoppable
+Domains and <action> can be
 * html - uses the IPFS hash set in Unstoppable Domains management
 * redir - uses the redirect_url set in Unstoppable Domains management
 * raw - displays an HTML table view of the full JSON returned from Unstoppable
