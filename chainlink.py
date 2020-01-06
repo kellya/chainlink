@@ -44,6 +44,8 @@ def redirectDomain(domain, action=None):
                 body = json.loads(dnslookup.content)
                 print(body)
                 redirect_url = body['ipfs']['redirect_domain']
+                if not redirect_url.startswith('http'):
+                    redirect_url = "http://" + redirect_url
                 response.status = 302
                 response.set_header('Location',redirect_url)
             else:
@@ -56,7 +58,11 @@ def redirectDomain(domain, action=None):
             body = json.loads(dnslookup.content)
             print(body)
             response.status = 302
-            response.set_header('Location', f"https://cloudflare-ipfs.com/ipfs/{body['ipfs']['html']}")
+            if not body['ipfs']['html'].startswith('ip'):
+                ipfshash = "ipfs/" + body['ipfs']['html']
+            else:
+                ipfshash = body['ipfs']['html']
+            response.set_header('Location', f"https://cloudflare-ipfs.com/{ipfshash}")
     elif action == 'raw':
         if dnslookup.status_code == 200:
             body = json.loads(dnslookup.content)
