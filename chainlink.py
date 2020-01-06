@@ -1,25 +1,34 @@
 #!/usr/bin/env python
 """Utilize crypto domains DNS and either redirect, or display information."""
-from bottle import Bottle, run, response, request
+from bottle import Bottle, run, response, request, static_file
 import json
 import requests
 import json2html
 
-VERSION = '0.0.1'
+VERSION = '0.1.0'
 
 app = Bottle()
 
 
 def domainLookup(domain):
-    apibase = 'https://unstoppabledomains.com/api/v1/'
-    dnslookup = requests.get(apibase + domain)
-    domainJSON = json.loads(dnslookup.content)
-    print(domainJSON)
-    return domainJSON
+    """Return a dictionary from JSON results of API call
+    or return False if there is an error
+    """
+    try:
+        apibase = 'https://unstoppabledomains.com/api/v1/'
+        dnslookup = requests.get(apibase + domain)
+        if dnslookup.status_code == 200:
+            domainInfo = json.loads(dnslookup.content)
+            return domainInfo
+        else:
+            return False
+    except requests.exceptions.ConnectionError:
+        return False
 
 
 @app.route("/")
 def root():
+    """Index page, just displays information about URL formatting"""
     host = request.get_header('host')
     helptext = f"""
     <p>General format is {host}/&lt;domain&gt;/&lt;action&gt;
@@ -49,10 +58,22 @@ def root():
 @app.route("/<domain>/")
 @app.route("/<domain>/<action>")
 def redirectDomain(domain, action=None):
+    """Handle the actual redirect for the domain queried"""
     lookupResult = domainLookup(domain)
-    redirect_url = lookupResult['ipfs']['redirect_domain']
-    html = lookupResult['ipfs']['html']
-    if action == 'redir':
+    if lookupResult:
+        redirect_url = lookupResult['ipfs']['redirect_domain']
+        ipfs_hash = lookupResult['ipfs']['html']
+    else:
+        return f"Unable to get info for {domain}"
+    if action is None or action == 'html':
+        response.status = 302
+        if not ipfs_hash.startswith('/ip'):
+            ipfshash = "ipfs/" + ipfs_hash
+        else:
+            ipfshash = ipfs_hash
+        response.set_header('Location',
+                            f"https://cloudflare-ipfs.com/{ipfshash}")
+    elif action == 'redir':
         try:
             if not redirect_url.startswith('http'):
                 redirect_url = "http://" + redirect_url
@@ -60,16 +81,14 @@ def redirectDomain(domain, action=None):
             response.set_header('Location', redirect_url)
         except KeyError:
             return f'Did not find a redirect for {domain}'
-    elif action is None or action == 'html':
-        response.status = 302
-        if not html.startswith('/ip'):
-            ipfshash = "ipfs/" + html
-        else:
-            ipfshash = html
-        response.set_header('Location',
-                            f"https://cloudflare-ipfs.com/{ipfshash}")
     elif action == 'raw':
         return json2html.json2html.convert(json=lookupResult)
+
+
+@app.route("/favicon.ico")
+def favicon():
+    """Display a favicon to make the errors go away :)"""
+    return static_file('favicon.ico', root='images')
 
 
 if __name__ == "__main__":
